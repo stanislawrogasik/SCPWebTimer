@@ -98,7 +98,7 @@ function sendTime() {
     $("#currentTime")[0].value = "Current time: " + (new Date(endTime).toLocaleString())
     $("#totalTimelog")[0].value = "Total timelog: " + totalTimeLog.toString() + " mins";
     ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestid, description, tempWorktime.toString()+" mins",new Date(endTime).toLocaleString())
-    timelogArray.push({"nr":currTableIndex,"id":requestid,"desc":description,"time":tempWorktime,"date":date})
+    timelogArray.push({"nr":currTableIndex,"id":requestid,"desc":description,"time":tempWorktime,"date":new Date(endTime).toLocaleString()})
     localStorage.timelogArray=JSON.stringify(timelogArray)
     $("#requestid")[0].value=""
     $("#description")[0].value=""
