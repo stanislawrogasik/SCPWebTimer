@@ -142,7 +142,7 @@ function init(){
     //putting previous time requests
     if(timelogArray.length>0){
             for(entry of timelogArray){
-            ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(entry.nr, entry.id, entry.desc, entry.time.toString()+" mins")
+            ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(entry.nr, entry.id, entry.desc, entry.time.toString()+" mins",entry.date)
             }
         currTableIndex=timelogArray[timelogArray.length-1].nr
     }
