@@ -100,6 +100,7 @@ function sendTime() {
     ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestid, description, tempWorktime.toString()+" mins",new Date(endTime).toLocaleString())
     timelogArray.push({"nr":currTableIndex,"id":requestid,"desc":description,"time":tempWorktime,"date":new Date(endTime).toLocaleString()})
     localStorage.timelogArray=JSON.stringify(timelogArray)
+    localStorage.lastEndTime=endTime
     $("#requestid")[0].value=""
     $("#description")[0].value=""
 }
@@ -129,10 +130,23 @@ function clearWorklog(){
 }
 
 function init(){
+    $("#manTime")[0].value=1
+    if(localStorage.debug!=undefined){
+        $("#manTime")[0].classList.remove("d-none")
+    }
     apikey = localStorage.apiKey
     name = localStorage.name
     baseUrl = localStorage.baseUrl
+    lastEndTime=localStorage.lastEndTime
+    //just to check
     console.log("Local storage loaded. Name: '"+name +"', Base URL: '"+baseUrl+"', APIKEY: '"+apikey+"'")
+
+    //if last endTime is today, then set-it
+    if((new Date(lastEndTime/1).toDateString())==(new Date().toDateString())){
+        console.log("Last end time is today! Restoring proper date!")
+        currentTime = lastEndTime
+    }
+    $("#currentTime")[0].value = "Current time: " + (new Date(currentTime/1).toLocaleString())
     //getting data from local storage
     try {
         timelogArray = JSON.parse(localStorage.timelogArray)
