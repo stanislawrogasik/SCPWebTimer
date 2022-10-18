@@ -92,6 +92,7 @@ function sendTime() {
     let tempWorktime = Math.ceil((endTime - currentTime) / (1000 * 60)) + parseInt(manTime)
     totalTimeLog += tempWorktime
     addWorklogV1(requestid, description, tempWorktime, getPortalID(requestid))
+    addWorklogV3(requestid, description, currentTime, (endTime+parseInt(manTime)*1000*60), getPortalID(requestid))
     //////we're past sending data
     currentTime = endTime
     //setting current time
