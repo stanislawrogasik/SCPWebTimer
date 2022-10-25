@@ -61,12 +61,20 @@ async function addWorklogV1(id, description, workminutes, portalid) {
         })
 
     });
-    return response; // parses JSON response into native JavaScript objects
+    return response.json(); // parses JSON response into native JavaScript objects
 }
 
 
-function getRowHTML(index, requestid, description, timetaken, date) {
-    return '<th scope="row">' + index.toString() + '</th><td>' + requestid.toString() + '</td><td>' + description.toString() + '</td><td>' + timetaken.toString() + '</td><td>' + date + '</td>'
+function getRowHTML(index, requestid, description, timetaken, date,status) {
+    if(status==true){
+        return '<th scope="row" style="background:lightgreen">' + index.toString() + '</th><td>' + requestid.toString() + '</td><td>' + description.toString() + '</td><td>' + timetaken.toString() + '</td><td>' + date + '</td>'
+    }
+    else if(status==false) {
+        return '<th scope="row" style="background:orangered">' + index.toString() + '</th><td>' + requestid.toString() + '</td><td>' + description.toString() + '</td><td>' + timetaken.toString() + '</td><td>' + date + '</td>'
+    }
+    else{
+        return '<th scope="row">' + index.toString() + '</th><td>' + requestid.toString() + '</td><td>' + description.toString() + '</td><td>' + timetaken.toString() + '</td><td>' + date + '</td>'
+    }
 }
 
 function hideUnhideTable() {
@@ -80,22 +88,31 @@ function hideUnhideTable() {
 
 function sendTime() {
     let requestid = $("#requestid")[0].value
+    let status = ''
     let description = $("#description")[0].value
     let endTime = (new Date().getTime())
     let manTime = $("#manTime")[0].value
     //getting minutes
     let tempWorktime = Math.ceil((endTime - currentTime) / (1000 * 60)) + parseInt(manTime)
     totalTimeLog += tempWorktime
-    addWorklogV1(requestid, description, tempWorktime, getPortalID(requestid))
+    addWorklogV1(requestid, description, tempWorktime, getPortalID(requestid)).then((val)=>
+    {if(val['operation']['result']['status']!=undefined&&val['operation']['result']['status']=="Success"){
+        ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestid, description, tempWorktime.toString()+" mins",new Date(endTime).toLocaleString(),true)
+         timelogArray.push({"nr":currTableIndex,"id":requestid,"desc":description,"time":tempWorktime,"date":new Date(endTime).toLocaleString(),"status":true})
+    }
+    else{
+        ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestid, description, tempWorktime.toString()+" mins",new Date(endTime).toLocaleString(),false)
+         timelogArray.push({"nr":currTableIndex,"id":requestid,"desc":description,"time":tempWorktime,"date":new Date(endTime).toLocaleString(),"status":false})
+    }
+        localStorage.timelogArray=JSON.stringify(timelogArray)
+    }
+    )
     //addWorklogV3(requestid, description, currentTime, (endTime+parseInt(manTime)*1000*60), getPortalID(requestid))
     //////we're past sending data
     currentTime = endTime
     //setting current time
     $("#currentTime")[0].value = "Current time: " + (new Date(endTime).toLocaleString())
     $("#totalTimelog")[0].value = "Total timelog: " + totalTimeLog.toString() + " mins";
-    ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestid, description, tempWorktime.toString()+" mins",new Date(endTime).toLocaleString())
-    timelogArray.push({"nr":currTableIndex,"id":requestid,"desc":description,"time":tempWorktime,"date":new Date(endTime).toLocaleString()})
-    localStorage.timelogArray=JSON.stringify(timelogArray)
     localStorage.lastEndTime=endTime
     $("#requestid")[0].value=""
     $("#description")[0].value=""
@@ -152,7 +169,7 @@ function init(){
     //putting previous time requests
     if(timelogArray.length>0){
             for(entry of timelogArray){
-            ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(entry.nr, entry.id, entry.desc, entry.time.toString()+" mins",entry.date)
+            ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(entry.nr, entry.id, entry.desc, entry.time.toString()+" mins",entry.date,entry.status)
             }
         currTableIndex=timelogArray[timelogArray.length-1].nr
     }
