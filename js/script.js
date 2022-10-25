@@ -9,7 +9,7 @@ let currTableIndex=0;
 let baseUrl=""
 
 
-async function addWorklogV3(id, description, startTime, endTime, portalid) {
+async function addWorklogV3(id, description, workminutes, portalid) {
     let url = baseUrl+"api/v3/worklog?TECHNICIAN_KEY=" + apikey;
     // Default options are marked with *
     const response = await fetch(url, {
@@ -26,17 +26,12 @@ async function addWorklogV3(id, description, startTime, endTime, portalid) {
                 "technician": {
                     "name": name
                 },
-                "start_time": {
-                    "value": startTime.toString()
-                },
-                "end_time": {
-                    "value": endTime.toString()
-                }
+                "total_time_spent": (workminutes*60*1000).toString()
             }
         })
 
     });
-    return response; // parses JSON response into native JavaScript objects
+    return response.json(); // parses JSON response into native JavaScript objects
 }
 
 async function addWorklogV1(id, description, workminutes, portalid) {
@@ -95,7 +90,24 @@ function sendTime() {
     //getting minutes
     let tempWorktime = Math.ceil((endTime - currentTime) / (1000 * 60)) + parseInt(manTime)
     totalTimeLog += tempWorktime
-    addWorklogV1(requestid, description, tempWorktime, getPortalID(requestid)).then((val)=>
+    addWorklogV3(requestid, description, tempWorktime, getPortalID(requestid)).then((val)=>
+    {console.log(val);
+        if(val['response_status']['status']!=undefined&&val['response_status']['status']=="success"){
+        ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestid, description, tempWorktime.toString()+" mins",new Date(endTime).toLocaleString(),true)
+         timelogArray.push({"nr":currTableIndex,"id":requestid,"desc":description,"time":tempWorktime,"date":new Date(endTime).toLocaleString(),"status":true})
+    }
+    else{
+        ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestid, description, tempWorktime.toString()+" mins",new Date(endTime).toLocaleString(),false)
+         timelogArray.push({"nr":currTableIndex,"id":requestid,"desc":description,"time":tempWorktime,"date":new Date(endTime).toLocaleString(),"status":false})
+    }
+        localStorage.timelogArray=JSON.stringify(timelogArray)
+
+
+    }
+    )
+    /* //FOR V1
+
+     addWorklogV1(requestid, description, tempWorktime, getPortalID(requestid)).then((val)=>
     {if(val['operation']['result']['status']!=undefined&&val['operation']['result']['status']=="Success"){
         ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestid, description, tempWorktime.toString()+" mins",new Date(endTime).toLocaleString(),true)
          timelogArray.push({"nr":currTableIndex,"id":requestid,"desc":description,"time":tempWorktime,"date":new Date(endTime).toLocaleString(),"status":true})
@@ -107,6 +119,8 @@ function sendTime() {
         localStorage.timelogArray=JSON.stringify(timelogArray)
     }
     )
+
+     */
     //addWorklogV3(requestid, description, currentTime, (endTime+parseInt(manTime)*1000*60), getPortalID(requestid))
     //////we're past sending data
     currentTime = endTime
