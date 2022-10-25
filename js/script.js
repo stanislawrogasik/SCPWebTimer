@@ -15,12 +15,9 @@ async function addWorklogV3(id, description, startTime, endTime, portalid) {
     const response = await fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-            'PORTALID': portalid
-            // 'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
         },
-        mode: 'no-cors', // no-cors, *cors, same-origin
-        body: "input_data=" + JSON.stringify({
+        body: "TECHNICIAN_KEY="+apikey+"&format=json&portalid="+portalid+"&INPUT_DATA=" + JSON.stringify({
             "worklog": {
                 "request": {
                     "id": id.toString()
@@ -47,11 +44,9 @@ async function addWorklogV1(id, description, workminutes, portalid) {
     const response = await fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-            'PORTALID': portalid
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
         },
-        mode: 'no-cors', // no-cors, *cors, same-origin
-        body: "format=json&TECHNICIAN_KEY="+apikey+"&PORTALID=" + portalid + "&INPUT_DATA=" + JSON.stringify({
+        body: "format=json&TECHNICIAN_KEY="+apikey+"&portalid=" + portalid + "&INPUT_DATA=" + JSON.stringify({
             "operation": {
                 "details": {
                     "worklogs": {
@@ -92,7 +87,7 @@ function sendTime() {
     let tempWorktime = Math.ceil((endTime - currentTime) / (1000 * 60)) + parseInt(manTime)
     totalTimeLog += tempWorktime
     addWorklogV1(requestid, description, tempWorktime, getPortalID(requestid))
-    addWorklogV3(requestid, description, currentTime, (endTime+parseInt(manTime)*1000*60), getPortalID(requestid))
+    //addWorklogV3(requestid, description, currentTime, (endTime+parseInt(manTime)*1000*60), getPortalID(requestid))
     //////we're past sending data
     currentTime = endTime
     //setting current time
