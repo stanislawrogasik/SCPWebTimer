@@ -11,6 +11,14 @@ let baseUrl=""
 
 async function addWorklogV3(id, description, workminutes, portalid) {
     let url = baseUrl+"api/v3/worklog?TECHNICIAN_KEY=" + apikey;
+    let jsonStr=""
+    if(parseInt(name) || 0){
+        jsonStr={"id":name.toString()}
+    }
+    else{
+        jsonStr={"name":name}
+    }
+
     // Default options are marked with *
     const response = await fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -23,9 +31,7 @@ async function addWorklogV3(id, description, workminutes, portalid) {
                     "id": id.toString()
                 },
                 "description": description,
-                "technician": {
-                    "name": name
-                },
+                "technician": jsonStr,
                 "total_time_spent": (workminutes*60*1000).toString()
             }
         })
@@ -142,7 +148,7 @@ function getPortalID(id){
 }
 
 function clearWorklog(){
-    let confirm=window.confirm("Are you sure?");
+    let confirm=window.confirm("Are you sure to clear worklog?");
     if(confirm){
         console.log("SURE!")
         localStorage.timelogArray=[]
@@ -154,6 +160,16 @@ function clearWorklog(){
         currTableIndex=0;
     }
 
+}
+
+function resetTime(){
+    let confirm=window.confirm("Are you sure that you want to reset time?");
+    if(confirm){
+        let endTime = (new Date().getTime())
+        currentTime = endTime
+        $("#currentTime")[0].value = "Current time: " + (new Date(endTime).toLocaleString())
+        localStorage.lastEndTime=endTime
+    }
 }
 
 function init(){
@@ -197,5 +213,7 @@ $('#addTimeBtn')
 $('#showTimeLog').on('click', () => hideUnhideTable())
 
 $('#clearWorklog').on('click', () => clearWorklog())
+
+$('#resetTimeBtn').on('click', () => resetTime())
 
 init()

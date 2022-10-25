@@ -21,18 +21,15 @@
   <input type="text" class="form-control" id="description" placeholder="Some text...">
   <label for="description">Description</label>
 </div><br>
-  <div class="input-group mb-3">
-  <div class="input-group-prepend">
-  <button id="addTimeBtn" type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
-   </div>
-
+  <div class="mb-1">
+  <button id="addTimeBtn" type="submit" class="btn btn-primary btn-lg btn-block ">  Submit  </button>
+  <button id="resetTimeBtn" type="submit" class="btn btn-lg btn-block mr-1 btn-warning">Reset time</button>
   </div>
-
-  <div class="mb-1"><button id="showTimeLog" type="submit" class="btn btn-primary btn-block mb-5">Check worklog</button></div>
+<div class="mb-5"><button id="showTimeLog" type="submit" class="btn btn-secondary btn-sm btn-block">Show worklog table</button></div>
 
   <div class="mb-3"><button id="clearWorklog" type="submit" class="btn btn-danger btn-block">Clear worklog</button></div>
 </form>
-<div class="position-absolute end-0 translate-middle"><button class="btn btn-primary" onclick="window.open('/settings.html')">Settings</button></div> <br>
+<div class="position-absolute end-0 translate-middle"><button class="btn btn-primary" onclick="window.open('/settings.html')">⚙</button></div> <br>
 <table class="table d-none" id="worklogTable">
 
   <thead>
@@ -47,6 +44,6 @@
   <tbody>
   </tbody>
 </table>
-    <script src="js/script.js?ver=0.2"></script>
+    <script src="js/script.js?ver=0.3"></script>
   </body>
 </html>
