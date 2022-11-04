@@ -28,9 +28,7 @@
   
   <div class="btn-toolbar mb-3">
     <div class="input-group w-25">
-    <select class="form-select" aria-label="Default select example">
-      <option selected value="1">SupportCenter</option>
-      <option value="2">ServiceDesk(unavailable)</option>
+    <select class="form-select" id="selectedSystemDropdown" aria-label="Default select example">
       <!--<option value="3">Projekty(unavailable)</option>!-->
     </select></div>
     <div class="form-floating w-75">
@@ -65,6 +63,7 @@
         <th scope="col">Description</th>
         <th scope="col">Added worklog</th>
         <th scope="col">Date</th>
+        <th scope="col">System</th>
       </tr>
     </thead>
     <tbody>
