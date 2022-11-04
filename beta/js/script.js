@@ -251,6 +251,9 @@ function init() {
         console.log("Creating empty local creds")
         localStorage.localCredentials=JSON.stringify([])
     }
+    if(localStorage.totalTimeLog==undefined){
+        localStorage.totalTimeLog=0;
+    }
     //default adding minutes
     $("#manTime")[0].value = 1
     //if debugMode is enabled!
