@@ -3,7 +3,7 @@ console.log('App started')
 let currentTime = (new Date().getTime())
 let timelogArray = []
 let currTableIndex = 0;
-let totalTimeLog =  parseInt(localStorage.totalTimeLog)
+let totalTimeLog = 0;
 
 //this is function to add new systems based on currently available fields:
 //you need to create proper function for your system and update "addGeneralWorklog"
@@ -273,7 +273,9 @@ function init() {
     if ((new Date(lastEndTime / 1).toDateString()) == (new Date().toDateString())) {
         console.log("Last end time is today! Restoring proper date!")
         currentTime = lastEndTime
+        localStorage.totalTimeLog = parseInt(localStorage.totalTimeLog)
         $("#totalTimelog")[0].value = "Total timelog: "+parseInt(localStorage.totalTimeLog)+" mins";
+
     }
     $("#currentTime")[0].value = "Current time: " + (new Date(currentTime / 1).toLocaleString())
     //getting data from local storage
