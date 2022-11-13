@@ -263,11 +263,7 @@ function init() {
     //loading systems from the localStorage into the HTML
     loadSystemsIntoMainPage()
 
-    //in case somebody did exit from a webpage
-    lastEndTime = parseInt(localStorage.lastEndTime)
-    $("#totalTimelog")[0].value = "Total timelog: " + localStorage.totalTimeLog.toString() + " mins";
-    //just to check
-    console.log("Local credentials: "+localStorage.localCredentials)
+    
 
     //if last endTime is today, then set-it
     if ((new Date(lastEndTime / 1).toDateString()) == (new Date().toDateString())) {
@@ -280,6 +276,11 @@ function init() {
         localStorage.totalTimeLog = 0
         totalTimeLog=0
     }
+    //in case somebody did exit from a webpage
+    lastEndTime = parseInt(localStorage.lastEndTime)
+    $("#totalTimelog")[0].value = "Total timelog: " + localStorage.totalTimeLog.toString() + " mins";
+    //just to check
+    console.log("Local credentials: "+localStorage.localCredentials)
     $("#currentTime")[0].value = "Current time: " + (new Date(currentTime / 1).toLocaleString())
     //getting data from local storage
 
