@@ -6,28 +6,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
     <!-- Latest compiled and minified CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/bootswatch@5.2.2/dist/darkly/bootstrap.min.css,npm/bootswatch@5.2.2/dist/darkly/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous"></script>
+
 <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
   </head>
   <body>
-  <div class="g-2 mx-auto mt-1"> <h3 class="card-title">Support Center Timer - Settings</h3> </div>
+   
+  <div class="g-2 mx-auto mt-1"> <h3 class="card-title">ServiceDesk / Support Center Timer - Settings</h3> </div>
   <br>
+  <div class="input-group mb-3">
+    <select class="form-select" id="systemSelect" aria-label="Default select" >
+      <option selected value="default">Select system</option>
+      <option value="1">SupportCenter</option>
+      <option value="2">ServiceDesk</option>
+      <!--<option value="3">Projekty(unavailable)</option>!-->
+    </select></div>
+  <div id="settingsInputs" class="d-none">
   <div class="form-floating mb-3">
   <input type="text" class="form-control" id="baseURL" placeholder="123">
   <label for="floatingInput">Connect URI</label>
   </div>
-  <div class="form-floating">
+  <div class="form-floating mb-3">
   <input type="text" class="form-control" id="apiKey" placeholder="Some text...">
   <label for="floatingPassword">API-KEY</label>
-  </div><br>
+  </div>
 <div class="form-floating mb-3">
   <input type="text" class="form-control" id="name" placeholder="123">
   <label for="floatingInput">UserID (can get from variable "userID" in SCP) or Full name of technician</label>
   </div>
   <div class="mb-1"><button id="save" type="submit" class="btn btn-primary">Save</button></div>
-</form>
+</div>
+<div class="mb-1"><button id="activeHelpCards" type="submit" class="btn btn-warning">Help cards</button></div>
+<div id = "helpcards" class="d-none">
+<div class = "card text-bg-primary">
+<div class="card-body mb-3">
+  <h5 class="card-title">General information</h5>
+  After you click "save" button, please reload the main webpage!<br>
+  This timer is still WIP, if you encounter any bug, please create an issue :)!
+</div>
+</div>
 
-
-    <script src="js/settings.js"></script>
+<div class="card">
+  <div class="card-body mb-3">
+    <h5 class="card-title">Connect URI</h5>
+    <b>"Connect URI"</b> - needs to be exact address of the webpage. Example: <b>"https://supportcenter.example.org/"</b> with the "/" at the end! <br>
+    If you want the feature to verify if timelog was added - add this webpage to the headers(trusted origin) or use CORS.
+  </div>
+</div>
+<div class="card">
+  <div class="card-body mb-3">
+    <h5 class="card-title">API-KEY</h5>
+    <b>"API-KEY"</b> - API KEY generated from the ServiceDesk Plus or the SupportCenter Plus or both 
+  </div>
+</div>
+<div class="card">
+  <div class="card-body mb-3">
+    <h5 class="card-title">UserID</h5>
+    <b>"USERID"</b> - you need to obtain it from the system and WebConsole. <br>
+    1.) Login to the system <br>
+    2.) Open WebConsole(with F12)<br>
+    3.) Type "userID" <br>
+    4.) Get the variable value and paste it here
+  </div>
+</div></div>
+    <script src="js/settings.js?v=0.1"></script>
   </body>
 </html>
