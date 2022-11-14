@@ -270,7 +270,7 @@ function init() {
     if ((new Date(lastEndTime / 1).toDateString()) == (new Date().toDateString())) {
         console.log("Last end time is today! Restoring proper date!")
         currentTime = lastEndTime
-        localStorage.totalTimeLog = parseInt(localStorage.totalTimeLog)
+        totalTimeLog = parseInt(localStorage.totalTimeLog)
         $("#totalTimelog")[0].value = "Total timelog: "+parseInt(localStorage.totalTimeLog)+" mins";
     }
     else {
