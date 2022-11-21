@@ -18,19 +18,29 @@ let totalTimeLog = 0;
 /// endTime - time in which the timelog was sent
 function addGeneralWorklog(requestID, description, tempWorktime, credentials, endTime){
     if(credentials.system=="SupportCenter"){
-    addWorklogV3SupportCenter(requestID, description, tempWorktime, getPortalID(requestID),credentials.userID, credentials.baseURL,credentials.apiKey).then((val) => {
+        //there's a fallback after API v3 - little mess,
+        addWorklogV3SupportCenter(requestID, description, tempWorktime, getPortalID(requestID),credentials.userID, credentials.baseURL,credentials.apiKey).then((val) => {
         console.log(val);
         if (val['response_status']['status'] != undefined && val['response_status']['status'] == "success") {
             ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestID, description, tempWorktime.toString() + " mins", new Date(endTime).toLocaleString(), true,credentials.system)
             timelogArray.push({ "nr": currTableIndex, "id": requestID, "desc": description, "time": tempWorktime, "date": new Date(endTime).toLocaleString(), "status": true, "system":credentials.system })
-        }
+            }
+        else if(val['response_status']['status'] != undefined && val['response_status']['status'] == "failed"){
+            //fallback to V1 due to SCP API
+            addWorklogV1SupportCenter(requestID, description, tempWorktime, getPortalID(requestID),credentials.userID, credentials.baseURL,credentials.apiKey).then((val) => {
+                console.log(val)
+               if (val.operation.result.status != undefined && val.operation.result.status == "Success") {
+                ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestID, description, tempWorktime.toString() + " mins", new Date(endTime).toLocaleString(), true,credentials.system)
+                timelogArray.push({ "nr": currTableIndex, "id": requestID, "desc": description, "time": tempWorktime, "date": new Date(endTime).toLocaleString(), "status": true, "system":credentials.system })
+                }
+            })
+            }
         else {
             ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestID, description, tempWorktime.toString() + " mins", new Date(endTime).toLocaleString(), false,credentials.system)
             timelogArray.push({ "nr": currTableIndex, "id": requestID, "desc": description, "time": tempWorktime, "date": new Date(endTime).toLocaleString(), "status": false, "system":credentials.system })
-        }
+            }
         localStorage.timelogArray = JSON.stringify(timelogArray)
-        }
-        )
+        })
     }
     else if(credentials.system="ServiceDesk"){
         addWorklogV3ServiceDesk(requestID, description, tempWorktime, getPortalID(requestID),credentials.userID, credentials.baseURL,credentials.apiKey).then((val) => {
@@ -45,7 +55,6 @@ function addGeneralWorklog(requestID, description, tempWorktime, credentials, en
               })
         }
     }
-
 
 //compatible with SupportCenter
 async function addWorklogV3SupportCenter(id, description, workminutes, portalid, userID, baseURL, apiKey) {
@@ -110,22 +119,20 @@ async function addWorklogV3ServiceDesk(id, description, workminutes, portalid, u
     return response.json(); // parses JSON response into native JavaScript objects
 }
 
-//unused function - leaving for history 
-/*
-async function addWorklogV1(id, description, workminutes, portalid) {
-    let url = baseUrl + "sdpapi/request/" + id + "/worklog";
+async function addWorklogV1SupportCenter(id, description, workminutes, portalid,userID, baseURL, apiKey) {
+    let url = baseURL + "sdpapi/request/" + id + "/worklog";
     const response = await fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
         },
-        body: "format=json&TECHNICIAN_KEY=" + apikey + "&portalid=" + portalid + "&INPUT_DATA=" + JSON.stringify({
+        body: "format=json&TECHNICIAN_KEY=" + apiKey + "&portalid=" + portalid + "&INPUT_DATA=" + JSON.stringify({
             "operation": {
                 "details": {
                     "worklogs": {
                         "worklog": {
                             "description": description,
-                            "technician": name,
+                            "technician": userID,
                             "workMinutes": workminutes.toString()
                         }
                     }
@@ -136,7 +143,6 @@ async function addWorklogV1(id, description, workminutes, portalid) {
     });
     return response.json(); // parses JSON response into native JavaScript objects
 }
-*/
 
 function getRowHTML(index, requestid, description, timetaken, date, status, system) {
     if (status == true) {
