@@ -58,34 +58,35 @@ function addGeneralWorklog(requestID, description, tempWorktime, credentials, en
 
 //compatible with SupportCenter
 async function addWorklogV3SupportCenter(id, description, workminutes, portalid, userID, baseURL, apiKey) {
-    let url = baseURL + "api/v3/worklog?TECHNICIAN_KEY=" + apiKey;
-    let jsonStr = ""
-    if (parseInt(userID) || 0) {
-        jsonStr = { "id": userID.toString() }
-    }
-    else {
-        jsonStr = { "name": userID }
-    }
 
-    // Default options are marked with *
-    const response = await fetch(url, {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+    fd = new FormData()
+    fd.append("authtoken",apiKey)
+    fd.append("portalid",portalid)
+    console.log(portalid)
+    obj = {"worklog": {
+        "owner": {
+            "id": userID.toString()
         },
-        body: "TECHNICIAN_KEY=" + apiKey + "&format=json&portalid=" + portalid + "&INPUT_DATA=" + JSON.stringify({
-            "worklog": {
-                "request": {
-                    "id": id.toString()
-                },
-                "description": description,
-                "technician": jsonStr,
-                "total_time_spent": (workminutes * 60 * 1000).toString()
-            }
-        })
+        "time_spent": {
+            "minutes": (workminutes).toString()
+        },
+        "other_cost": "0.00",
+        "type": null,
+        "description": description,
+        "include_nonoperational_hours": true
+    }}
+    fd.append("input_data",JSON.stringify(obj))
+    console.log(fd.getAll('input_data'))
 
+    const response = await fetch(baseURL + "api/v3/requests/"+id.toString()+"/worklogs", {
+    "headers": {
+        "accept": "vnd.manageengine.v3+json",
+    },
+    "body": fd,
+    "method": "POST",
+    "mode":"cors"
     });
-    return response.json(); // parses JSON response into native JavaScript objects
+    return response.json();
 }
 
 async function addWorklogV3ServiceDesk(id, description, workminutes, portalid, userID, baseURL, apiKey) {
