@@ -20,21 +20,16 @@ function addGeneralWorklog(requestID, description, tempWorktime, credentials, en
     if(credentials.system=="SupportCenter"){
         //there's a fallback after API v3 - little mess,
         addWorklogV3SupportCenter(requestID, description, tempWorktime, getPortalID(requestID),credentials.userID, credentials.baseURL,credentials.apiKey).then((val) => {
-        console.log(val);
-        if (val['response_status']['status'] != undefined && val['response_status']['status'] == "success") {
+        console.log(JSON.stringify(val));
+        if (!(JSON.stringify(val).includes("Error"))) {
+            if( val['response_status']['status'] == "success"){
             ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestID, description, tempWorktime.toString() + " mins", new Date(endTime).toLocaleString(), true,credentials.system)
             timelogArray.push({ "nr": currTableIndex, "id": requestID, "desc": description, "time": tempWorktime, "date": new Date(endTime).toLocaleString(), "status": true, "system":credentials.system })
             }
-        else if(val['response_status']['status'] != undefined && val['response_status']['status'] == "failed"){
-            //fallback to V1 due to SCP API
-            addWorklogV1SupportCenter(requestID, description, tempWorktime, getPortalID(requestID),credentials.userID, credentials.baseURL,credentials.apiKey).then((val) => {
-                console.log(val)
-               if (val.operation.result.status != undefined && val.operation.result.status == "Success") {
-                ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestID, description, tempWorktime.toString() + " mins", new Date(endTime).toLocaleString(), true,credentials.system)
-                timelogArray.push({ "nr": currTableIndex, "id": requestID, "desc": description, "time": tempWorktime, "date": new Date(endTime).toLocaleString(), "status": true, "system":credentials.system })
-                }
-            })
-            }
+            else {
+                 ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestID, description, tempWorktime.toString() + " mins", new Date(endTime).toLocaleString(), false,credentials.system)
+                 timelogArray.push({ "nr": currTableIndex, "id": requestID, "desc": description, "time": tempWorktime, "date": new Date(endTime).toLocaleString(), "status": false, "system":credentials.system })
+            }}
         else {
             ($("#worklogTable")[0].insertRow(1)).innerHTML = getRowHTML(++currTableIndex, requestID, description, tempWorktime.toString() + " mins", new Date(endTime).toLocaleString(), false,credentials.system)
             timelogArray.push({ "nr": currTableIndex, "id": requestID, "desc": description, "time": tempWorktime, "date": new Date(endTime).toLocaleString(), "status": false, "system":credentials.system })
